@@ -20,6 +20,7 @@ class OrangeHRMLoginTest:
     LOGIN_BUTTON_XPATH = "//button[@type='submit']"
     DASHBOARD_URL_FRAGMENT = '/dashboard'
     DASHBOARD_HEADER_XPATH = "//h6[text()='Dashboard']"
+    ERROR_MESSAGE_XPATH = "//p[contains(@class, 'oxd-alert-content-text')]"
     TIMEOUT = 15
 
     @staticmethod
@@ -83,6 +84,52 @@ def test_orangehrm_login():
 
     except Exception as e:
         pytest.fail(f"Test failed due to error: {e}")
+    finally:
+        if driver:
+            driver.quit()
+
+@pytest.mark.login
+def test_login_invalid_credentials():
+    """
+    Negative Test: Attempt login with invalid credentials.
+    Steps:
+    1. Navigate to the login page.
+    2. Enter invalid username and/or password.
+    3. Click on Login button.
+    4. Validate that login fails and error message is displayed.
+
+    Expected Result:
+    Login should fail and an error message should be shown.
+    """
+    driver = None
+    INVALID_USERNAME = "invalid_user"
+    INVALID_PASSWORD = "wrong_pass"
+    try:
+        driver = OrangeHRMLoginTest.get_chrome_driver()
+        driver.get(OrangeHRMLoginTest.LOGIN_URL)
+        WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
+            EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.USERNAME_XPATH))
+        )
+        username_input = driver.find_element(By.XPATH, OrangeHRMLoginTest.USERNAME_XPATH)
+        password_input = driver.find_element(By.XPATH, OrangeHRMLoginTest.PASSWORD_XPATH)
+        login_button = driver.find_element(By.XPATH, OrangeHRMLoginTest.LOGIN_BUTTON_XPATH)
+
+        username_input.clear()
+        username_input.send_keys(INVALID_USERNAME)
+        password_input.clear()
+        password_input.send_keys(INVALID_PASSWORD)
+        login_button.click()
+
+        # Wait for error message
+        error_message = WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
+            EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.ERROR_MESSAGE_XPATH))
+        )
+        assert error_message.is_displayed(), "Error message not displayed after failed login."
+        assert "Invalid credentials" in error_message.text, (
+            f"Expected 'Invalid credentials' in error message, got: '{error_message.text}'"
+        )
+    except Exception as e:
+        pytest.fail(f"Negative login test failed due to error: {e}")
     finally:
         if driver:
             driver.quit()

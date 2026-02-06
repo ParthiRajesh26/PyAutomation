@@ -1,42 +1,47 @@
 # PyAutomation
 
 ## Overview
-PyAutomation is an automation testing project for the OrangeHRM demo application. It uses Selenium WebDriver with pytest for test automation and GitHub Actions for continuous integration.
+PyAutomation is an automated test suite for validating the login functionality of OrangeHRM using Selenium and pytest. It provides both positive and negative test cases to ensure robust authentication logic.
 
-## Test Suite
-All tests are located in the `tests/` directory and are executed using pytest. The CI pipeline runs all tests automatically on push and pull requests.
+## Test Coverage
 
-### Login Tests
-- **Positive Test:**
-  - Validates successful login with correct credentials.
-  - Location: `tests/test_login.py::test_orangehrm_login`
+### Positive Login Test
+- **File:** `tests/test_login.py`
+- **Test:** `test_orangehrm_login`
+- **Purpose:** Verifies that a user with valid credentials can successfully log in and access the dashboard.
+- **Expected Result:** User is redirected to the dashboard and the dashboard header is visible.
 
-- **Negative Test:**
-  - Validates system behavior when invalid credentials are provided.
-  - Location: `tests/test_login.py::test_login_invalid_credentials`
-  - **Purpose:** Ensures that authentication is robust and that users cannot log in with incorrect credentials.
-  - **Steps:**
-    1. Navigate to the login page.
-    2. Enter an invalid username and/or password.
-    3. Click the Login button.
-    4. Assert that login fails and an error message is displayed.
-  - **Expected Outcome:**
-    - The login attempt should fail.
-    - An error message (e.g., "Invalid credentials") should be visible on the page.
+### Negative Login Test (Invalid Credentials)
+- **File:** `tests/test_login.py`
+- **Test:** `test_login_invalid_credentials`
+- **Purpose:** Ensures that the system correctly rejects login attempts with invalid credentials.
+- **Expected Result:** The login attempt fails, and an error message ("Invalid credentials") is displayed. User is not redirected to the dashboard.
 
-#### Troubleshooting Guide
-- If the negative login test fails unexpectedly:
-  - Ensure the error message locator is correct and the page structure has not changed.
-  - Check for changes in the application's login error handling.
-  - Confirm that the test uses clearly invalid credentials.
-  - Review CI logs for Selenium/WebDriver issues.
+## How to Run the Tests
 
-#### Maintenance Instructions
-- To add new negative login scenarios, parameterize the test or add new test functions in `tests/test_login.py`.
-- Follow pytest naming conventions and keep negative tests isolated from positive ones.
+1. **Install Dependencies:**
+    ```sh
+    pip install selenium pytest pytest-html webdriver-manager
+    ```
+2. **Run Tests:**
+    ```sh
+    pytest tests/ --html=report.html --self-contained-html
+    ```
+3. **View Results:**
+    - Open `report.html` in your browser for a full test report.
 
 ## Continuous Integration
-CI is managed via GitHub Actions (`.github/workflows/selenium.yml`). All tests in the `tests/` folder are executed automatically.
+- All tests in the `tests/` directory are automatically run via GitHub Actions on push and pull request events.
+- The workflow is defined in `.github/workflows/selenium.yml`.
 
-## Contact
-For questions or maintenance, contact the repository owner or contributors via GitHub Issues.
+## Troubleshooting
+- **Webdriver Issues:** Ensure ChromeDriver is compatible with your Chrome browser version. The suite uses `webdriver-manager` for automatic driver management.
+- **Test Failures:**
+    - For negative test failures, check that invalid credentials are not valid for the test environment.
+    - For CI issues, confirm that test file and function names follow `pytest` conventions.
+- **Timeouts:** If tests fail due to timeouts, verify network connectivity and increase `TIMEOUT` in the test class if necessary.
+
+## Contribution & Future Improvements
+- Extend negative tests to cover scenarios like locked accounts, expired passwords, or SQL injection attempts.
+- Review and update tests as the login page or logic evolves.
+- Suggestions and pull requests are welcome!

@@ -20,8 +20,9 @@ class OrangeHRMLoginTest:
     LOGIN_BUTTON_XPATH = "//button[@type='submit']"
     DASHBOARD_URL_FRAGMENT = '/dashboard'
     DASHBOARD_HEADER_XPATH = "//h6[text()='Dashboard']"
-    ERROR_MESSAGE_XPATH = "//p[contains(@class, 'oxd-alert-content-text')]"
     TIMEOUT = 15
+    # Error message locator for failed login
+    ERROR_MESSAGE_XPATH = "//p[contains(@class, 'oxd-alert-content-text')]"
 
     @staticmethod
     def get_chrome_driver():
@@ -91,22 +92,25 @@ def test_orangehrm_login():
 @pytest.mark.login
 def test_login_invalid_credentials():
     """
-    Negative Test: Attempt login with invalid credentials.
+    Negative Test Case: Attempt login with invalid credentials and verify login is rejected.
+
     Steps:
     1. Navigate to the login page.
     2. Enter invalid username and/or password.
     3. Click on Login button.
-    4. Validate that login fails and error message is displayed.
+    4. Assert error message is displayed and login is not successful.
 
     Expected Result:
-    Login should fail and an error message should be shown.
+    System should reject the login attempt and display an appropriate error message.
     """
     driver = None
-    INVALID_USERNAME = "invalid_user"
-    INVALID_PASSWORD = "wrong_pass"
+    INVALID_USERNAME = 'invalid_user'
+    INVALID_PASSWORD = 'wrong_pass'
     try:
         driver = OrangeHRMLoginTest.get_chrome_driver()
         driver.get(OrangeHRMLoginTest.LOGIN_URL)
+
+        # Wait for username input
         WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
             EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.USERNAME_XPATH))
         )
@@ -120,13 +124,18 @@ def test_login_invalid_credentials():
         password_input.send_keys(INVALID_PASSWORD)
         login_button.click()
 
-        # Wait for error message
-        error_message = WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
+        # Wait for error message to appear
+        error_message_element = WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
             EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.ERROR_MESSAGE_XPATH))
         )
-        assert error_message.is_displayed(), "Error message not displayed after failed login."
-        assert "Invalid credentials" in error_message.text, (
-            f"Expected 'Invalid credentials' in error message, got: '{error_message.text}'"
+        error_message_text = error_message_element.text
+        # The typical message is "Invalid credentials" for this demo site
+        assert "Invalid credentials" in error_message_text, (
+            f"Expected error message not found. Actual message: {error_message_text}"
+        )
+        # Ensure we are not redirected to dashboard
+        assert OrangeHRMLoginTest.DASHBOARD_URL_FRAGMENT not in driver.current_url, (
+            "Login should not succeed with invalid credentials."
         )
     except Exception as e:
         pytest.fail(f"Negative login test failed due to error: {e}")

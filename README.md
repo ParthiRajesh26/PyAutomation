@@ -15,7 +15,23 @@ PyAutomation is an automated test suite for validating the login functionality o
 - **File:** `tests/test_login.py`
 - **Test:** `test_login_invalid_credentials`
 - **Purpose:** Ensures that the system correctly rejects login attempts with invalid credentials.
-- **Expected Result:** The login attempt fails, and an error message ("Invalid credentials") is displayed. User is not redirected to the dashboard.
+- **Test Steps:**
+    1. Navigate to the login page.
+    2. Enter an invalid username and/or password.
+    3. Click the Login button.
+    4. Assert that an error message ("Invalid credentials") is displayed and the user is not redirected to the dashboard.
+- **Expected Result:**
+    - The login attempt fails.
+    - An error message ("Invalid credentials") is displayed.
+    - The user remains on the login page and is not redirected to the dashboard.
+- **Maintenance:**
+    - If the error message or login flow changes, update the assertion in the test and this documentation.
+    - Ensure invalid credentials do not match any valid users in the test environment.
+- **Troubleshooting:**
+    - If this test fails, verify that the invalid credentials used are not present as valid users.
+    - Check if the login page or error message locator has changed.
+    - Confirm network connectivity and that the OrangeHRM demo site is accessible.
+    - Review the `TIMEOUT` setting in the test class if timing issues occur.
 
 ## How to Run the Tests
 

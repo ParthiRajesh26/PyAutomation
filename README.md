@@ -1,69 +1,80 @@
 
+
 ---
 ## Feature: Negative Login Test Case for Invalid Credentials
 
-- **Project Overview:**
-  This repository automates testing of the OrangeHRM login functionality using Selenium and pytest. It now includes a negative test case to verify that invalid credentials are properly rejected.
+### Project Overview
+This repository automates the login functionality and negative test scenarios for OrangeHRM using Selenium WebDriver and pytest. The project is designed for robust, scalable, and maintainable test automation.
 
-- **Technology/framework used:**
-  Python, Selenium WebDriver, pytest, GitHub Actions CI
+### Technology/Framework Used
+- Python 3.10
+- Selenium WebDriver
+- pytest
+- pytest-html (for test reports)
+- webdriver-manager
+- GitHub Actions (CI)
 
-- **Change implemented:**
-  Added a negative login test case (`test_login_invalid_credentials`) to ensure the application displays an error and prevents access when invalid credentials are used.
+### Change Implemented
+- Added a negative login test case to validate system behavior for invalid credentials. Ensures the application rejects unauthorized access and displays an appropriate error message.
 
-- **Where the change was made:**
-  - `tests/test_login.py`: Added `test_login_invalid_credentials` function
-  - Branch: `feature/negative-login-invalid-credentials`
+### Where the Change Was Made
+- `tests/test_login.py`: Added `test_login_invalid_credentials` function using the existing login utility.
+- CI workflow (`.github/workflows/selenium.yml`) automatically includes all tests in `tests/`.
 
-- **Setup/installation steps:**
-  1. Install dependencies:
-     ```bash
-     pip install selenium pytest
-     ```
-  2. Ensure ChromeDriver is installed and available in PATH.
+### Setup/Installation Steps
+1. Clone the repository:
+   ```
+   git clone https://github.com/ParthiRajesh26/PyAutomation.git
+   cd PyAutomation
+   ```
+2. Install dependencies:
+   ```
+   pip install selenium pytest pytest-html webdriver-manager
+   ```
 
-- **Dependencies required:**
-  - selenium
-  - pytest
-  - ChromeDriver
+### Dependencies Required
+- Python 3.10+
+- selenium
+- pytest
+- pytest-html
+- webdriver-manager
 
-- **How to run the tests:**
-  Run all tests (including the negative login test) with:
-  ```bash
-  pytest tests/
-  ```
-  Or run only the login tests:
-  ```bash
-  pytest tests/test_login.py
-  ```
+### How to Run the Tests
+Run all tests:
+```
+pytest tests/ --html=report.html --self-contained-html
+```
+Run only the negative login test:
+```
+pytest tests/test_login.py -k test_login_invalid_credentials
+```
 
-- **Example run command:**
-  ```bash
-  pytest -k test_login_invalid_credentials tests/test_login.py
-  ```
+### Example Run Command
+```
+pytest tests/test_login.py -k test_login_invalid_credentials --html=neg_report.html --self-contained-html
+```
 
-- **Expected behaviour/output:**
-  The negative login test attempts to log in with username `invalid_user` and password `wrong_pass`. The test will pass if the application displays an error message containing "Invalid credentials" and does not allow login.
+### Expected Behaviour/Output
+- The negative login test (`test_login_invalid_credentials`) attempts login with invalid credentials.
+- Test should fail the login attempt, assert an error message is displayed, and confirm no dashboard access.
+- Example assertion: error message contains "Invalid credentials".
+- Test result is reported in the console and HTML report.
 
-  Example output:
-  ```
-  ============================= test session =============================
-  tests/test_login.py::test_login_invalid_credentials PASSED
-  ```
+### Troubleshooting Guide
+- **Selector mismatch:** Update XPATH locators in `tests/test_login.py` if the OrangeHRM UI changes.
+- **No error message displayed:** Verify the error message locator matches the application's current UI.
+- **CI failures:** Check GitHub Actions logs for missing dependencies or browser issues.
+- **WebDriver errors:** Ensure latest Chrome and ChromeDriver are installed or use `webdriver-manager`.
 
-- **CI Integration:**
-  The GitHub Actions workflow (`.github/workflows/selenium.yml`) will run all tests in `tests/`, including the new negative login test case.
+### Maintenance Procedures
+- Periodically review and update test selectors and expected error messages.
+- Expand negative test coverage for additional invalid login scenarios (e.g., empty fields, SQL injection attempts).
+- Keep dependencies up to date.
 
-- **Troubleshooting Guide:**
-  - If the test fails due to element not found, verify selectors in `tests/test_login.py` and ensure the OrangeHRM login page has not changed.
-  - If error message assertion fails, check the actual error text and update the test if the application changes its error messaging.
-  - If ChromeDriver is not found, ensure it is installed and accessible from your PATH.
-  - If tests are not discovered by pytest, ensure test function names start with `test_` and are located in the `tests/` directory.
+### Recommendations for Future Improvements
+- Parameterize invalid login tests for broader coverage.
+- Integrate test result reporting with dashboards.
+- Use fixtures for browser/session setup and teardown.
+- Schedule regular test and documentation reviews.
 
-- **Maintenance Procedures:**
-  - If the login page changes (e.g., new selectors, error message format), update the locators and assertions in the test function.
-  - Periodically review test coverage for login scenarios, and add additional negative cases as needed (e.g., locked account, SQL injection attempts).
-  - Document any updates or issues in this section for future contributors.
-
-- **Knowledge Transfer:**
-  New contributors should review this section for guidance on adding or maintaining negative login tests. Follow pytest and Selenium best practices, and reference the utility function `login_with_credentials` for consistent test logic.
+---

@@ -2,35 +2,65 @@
 
 ---
 ## Feature: Negative Login Test Case for Invalid Credentials
-- Project Overview: PyAutomation is an automated test suite for OrangeHRM, focusing on robust login functionality and error handling using Selenium and pytest.
-- Technology/framework used: Python, Selenium WebDriver, pytest, GitHub Actions CI
-- Change implemented: Added a negative login test case to validate that the system correctly handles invalid credentials and displays appropriate error messages.
-- Where the change was made: tests/test_login.py (new test function: test_login_invalid_credentials)
-- Setup/installation steps:
-    1. Clone the repository: `git clone https://github.com/ParthiRajesh26/PyAutomation.git`
-    2. Checkout the feature branch: `git checkout feature/negative-login-invalid-credentials`
-    3. Install dependencies: `pip install -r requirements.txt` (ensure ChromeDriver is available in PATH)
-- Dependencies required: Python 3.x, Selenium, pytest, ChromeDriver
-- How to run the tests: `pytest tests/test_login.py`
-- Example run command:
-    ```bash
-    pytest tests/test_login.py -k test_login_invalid_credentials
-    ```
-- Expected behaviour/output:
-    - For invalid login attempts, the test should fail to log in and display an error message such as "Invalid credentials".
-    - All invalid input combinations are validated; test passes if error handling is robust.
 
-### Troubleshooting Guide
-- **Test not detected by CI**: Ensure test function starts with `test_` and is located in `tests/test_login.py`.
-- **Assertion fails due to unexpected error message**: Check OrangeHRM error message text and update assertion logic if needed.
-- **ChromeDriver issues**: Verify ChromeDriver is installed and available in PATH.
-- **Documentation unclear**: Revise this section for clarity and completeness.
+- **Project Overview:**
+  PyAutomation is a Python-based automation and test framework for validating OrangeHRM login functionality using Selenium and pytest.
 
-### Maintenance Procedures
-- Periodically review and update negative test cases for new authentication features or error messages.
-- Ensure compatibility with codebase changes and Selenium/pytest updates.
+- **Technology/framework used:**
+  Python 3.10, Selenium WebDriver, pytest, pytest-html, webdriver-manager, GitHub Actions CI
 
-### Recommendations for Future Improvements
-- Parameterize negative tests for additional authentication flows.
-- Automate generation of negative test cases for scalability.
-- Schedule periodic reviews to maintain robust coverage.
+- **Change implemented:**
+  Added a negative login test case (`test_login_invalid_credentials`) to verify that the system correctly handles invalid credentials and displays an error message.
+
+- **Where the change was made:**
+  - `tests/test_login.py`: Added `test_login_invalid_credentials` function.
+  - `.github/workflows/selenium.yml`: CI already includes all tests in `tests/`.
+
+- **Setup/installation steps:**
+  1. Clone the repository.
+     ```bash
+     git clone https://github.com/ParthiRajesh26/PyAutomation.git
+     cd PyAutomation
+     ```
+  2. Install dependencies.
+     ```bash
+     pip install selenium pytest pytest-html webdriver-manager
+     ```
+
+- **Dependencies required:**
+  - selenium
+  - pytest
+  - pytest-html
+  - webdriver-manager
+
+- **How to run the tests:**
+  ```bash
+  pytest tests/ --html=report.html --self-contained-html
+  ```
+
+- **Example run command:**
+  ```bash
+  pytest tests/test_login.py --html=report.html --self-contained-html
+  ```
+
+- **Expected behaviour/output:**
+  - Valid login: User is redirected to dashboard and dashboard header is visible.
+  - Invalid login: Error message is displayed, user is NOT redirected to dashboard.
+  - Test report is generated as `report.html`.
+
+- **Troubleshooting Guide:**
+  - **Error message not displayed:** The test asserts on login failure and checks for error message text. If not found, review selector and page structure.
+  - **Test setup failures:** Ensure ChromeDriver is installed and compatible. Check Python and package versions.
+  - **CI failures:** Validate `.github/workflows/selenium.yml` includes `pytest tests/` and dependencies are installed.
+  - **Login succeeded unexpectedly:** Verify invalid credentials are not accepted and error message is configured in OrangeHRM.
+
+- **Maintenance Procedures:**
+  - To extend negative login tests, parameterize the test with multiple invalid credential scenarios.
+  - Review test results in `report.html` and CI logs for failed logins.
+  - Update selectors and error handling as OrangeHRM UI evolves.
+
+- **Knowledge Transfer & Recommendations:**
+  - The negative login test case is isolated and uses robust assertions for error handling.
+  - Follow naming conventions and use constants for maintainability.
+  - Recommend periodic review of test coverage and automation of additional negative scenarios.
+  - Integrate analytics and reporting for failed logins in future enhancements.

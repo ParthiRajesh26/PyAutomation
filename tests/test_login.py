@@ -88,3 +88,60 @@ def test_orangehrm_login():
     finally:
         if driver:
             driver.quit()
+
+def login_with_credentials(username, password):
+    """
+    Utility function to perform login and return result dict.
+    """
+    driver = OrangeHRMLoginTest.get_chrome_driver()
+    result = {"success": False, "error": None}
+    try:
+        driver.get(OrangeHRMLoginTest.LOGIN_URL)
+        WebDriverWait(driver, OrangeHRMLoginTest.TIMEOUT).until(
+            EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.USERNAME_XPATH))
+        )
+        username_input = driver.find_element(By.XPATH, OrangeHRMLoginTest.USERNAME_XPATH)
+        password_input = driver.find_element(By.XPATH, OrangeHRMLoginTest.PASSWORD_XPATH)
+        login_button = driver.find_element(By.XPATH, OrangeHRMLoginTest.LOGIN_BUTTON_XPATH)
+        username_input.clear()
+        username_input.send_keys(username)
+        password_input.clear()
+        password_input.send_keys(password)
+        login_button.click()
+
+        # Wait for either dashboard or error message
+        try:
+            WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, OrangeHRMLoginTest.ERROR_MESSAGE_XPATH))
+            )
+            error_elem = driver.find_element(By.XPATH, OrangeHRMLoginTest.ERROR_MESSAGE_XPATH)
+            result["error"] = error_elem.text
+            result["success"] = False
+        except Exception:
+            # Check for dashboard
+            if OrangeHRMLoginTest.DASHBOARD_URL_FRAGMENT in driver.current_url:
+                result["success"] = True
+            else:
+                result["error"] = "Unknown error during login."
+                result["success"] = False
+    finally:
+        driver.quit()
+    return result
+
+@pytest.mark.login
+def test_login_invalid_credentials():
+    """
+    Test Steps:
+    1. Navigate to the login page.
+    2. Enter invalid username and/or password.
+    3. Click on Login button.
+    4. Validate error message is displayed and login fails.
+
+    Expected Result:
+    Login should fail and an appropriate error message should be shown.
+    """
+    invalid_username = "invalid_user"
+    invalid_password = "wrong_pass"
+    result = login_with_credentials(invalid_username, invalid_password)
+    assert not result["success"], "Login should fail with invalid credentials"
+    assert result["error"], "Error message should be present for invalid login"

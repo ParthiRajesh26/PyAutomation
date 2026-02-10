@@ -2,46 +2,47 @@
 ---
 ## Feature: Negative Login Test Case for Invalid Credentials
 
-- **Project Overview:**
-  PyAutomation is an automation testing framework for validating web application functionality using Selenium and pytest. This project automates login tests for OrangeHRM.
+- Project Overview: PyAutomation is an automation testing framework for validating web application functionality, focusing on login workflows for OrangeHRM.
+- Technology/framework used: Python, Selenium WebDriver, Pytest, GitHub Actions CI
+- Change implemented: Added a negative login test case to verify system response to invalid credentials.
+- Where the change was made: tests/test_login.py (new test function: test_login_with_invalid_credentials)
+- Setup/installation steps:
+    1. Ensure Python 3.x is installed.
+    2. Install dependencies: `pip install selenium pytest`
+    3. Download and install ChromeDriver compatible with your Chrome browser version.
+- Dependencies required:
+    - selenium
+    - pytest
+    - ChromeDriver
+- How to run the tests:
+    - Run all tests: `pytest tests/`
+    - Run only login tests: `pytest tests/test_login.py`
+- Example run command:
+    ```bash
+    pytest tests/test_login.py
+    ```
+- Expected behaviour/output:
+    - Valid login: User is redirected to dashboard, dashboard header is visible.
+    - Invalid login: Login fails, error message "Invalid credentials" is displayed, test asserts failure.
 
-- **Technology/Framework Used:**
-  Python, Selenium WebDriver, pytest, GitHub Actions CI
+### Troubleshooting Guide
+- If tests fail due to missing ChromeDriver, ensure it is installed and accessible in your PATH.
+- If error messages differ, update test assertions to match actual application output.
+- If CI fails, review GitHub Actions logs for missing dependencies or environment issues.
 
-- **Change Implemented:**
-  Added a negative login test case to verify that the system correctly handles invalid credentials by displaying an error message and preventing access.
+### Maintenance Procedures
+- To add new negative test cases, create new functions in tests/test_login.py using pytest conventions.
+- Keep selectors and error messages updated as application evolves.
+- Periodically review test suite for flaky or outdated tests.
 
-- **Where the Change Was Made:**
-  - `tests/test_login.py`: Added `test_login_invalid_credentials` function.
+### Recommendations for Future Improvements
+- Parameterize invalid credential scenarios for broader coverage.
+- Expand negative tests to cover locked accounts, expired passwords, etc.
+- Integrate test result metrics into CI reporting.
+- Automate documentation updates for new test cases.
 
-- **Setup/Installation Steps:**
-  1. Clone the repository.
-  2. Install dependencies:
-     ```bash
-     pip install -r requirements.txt
-     ```
-  3. Ensure ChromeDriver is installed and available in your PATH.
-
-- **Dependencies Required:**
-  - Python 3.7+
-  - selenium
-  - pytest
-  - ChromeDriver
-
-- **How to Run the Tests:**
-  ```bash
-  pytest tests/test_login.py
-  ```
-
-- **Example Run Command:**
-  ```bash
-  pytest tests/test_login.py::test_login_invalid_credentials
-  ```
-
-- **Expected Behaviour/Output:**
-  - The test attempts login with invalid credentials (`invalid_user` / `wrong_pass`).
-  - Login should fail.
-  - An error message indicating invalid credentials should be displayed.
-  - Test assertion ensures login does not succeed and the correct error message is present.
+### Knowledge Transfer
+- Location of login tests: tests/test_login.py
+- Contact points for test maintenance: Refer to repository contributors or automation team lead.
 
 ---

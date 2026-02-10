@@ -127,3 +127,24 @@ def login_with_credentials(username, password):
     finally:
         driver.quit()
     return result
+
+@pytest.mark.login
+def test_login_invalid_credentials():
+    """
+    Negative Test Case: Attempt login with invalid credentials and validate failure.
+    Steps:
+    1. Navigate to login page.
+    2. Enter invalid username and password.
+    3. Click Login.
+    4. Validate error message is shown and login is unsuccessful.
+
+    Expected Result:
+    Login should fail, error message should be displayed, no access to dashboard.
+    """
+    invalid_username = "invalid_user"
+    invalid_password = "wrong_pass"
+    result = login_with_credentials(invalid_username, invalid_password)
+    assert not result["success"], "Login unexpectedly succeeded with invalid credentials."
+    assert result["error"] is not None and "Invalid credentials" in result["error"], (
+        f"Expected error message for invalid credentials, got: {result['error']}"
+    )

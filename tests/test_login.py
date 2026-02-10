@@ -127,3 +127,24 @@ def login_with_credentials(username, password):
     finally:
         driver.quit()
     return result
+
+@pytest.mark.login
+def test_orangehrm_login_invalid():
+    """
+    Negative Test Case: Attempt login with invalid credentials and validate failure.
+
+    Test Steps:
+    1. Navigate to the login page.
+    2. Enter invalid username and password.
+    3. Click on Login button.
+    4. Validate that login fails and error message is displayed.
+
+    Expected Result:
+    Login should fail, and an error message should be shown to the user.
+    """
+    invalid_username = "invalid_user"
+    invalid_password = "wrong_pass"
+    result = login_with_credentials(invalid_username, invalid_password)
+    assert not result["success"], "Login succeeded with invalid credentials, which is a security risk."
+    assert result["error"] is not None, "No error message displayed for invalid login."
+    assert "Invalid" in result["error"] or "credentials" in result["error"], f"Unexpected error message: {result['error']}"

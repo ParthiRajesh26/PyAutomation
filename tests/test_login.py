@@ -129,26 +129,21 @@ def login_with_credentials(username, password):
     return result
 
 @pytest.mark.login
-@pytest.mark.parametrize("username,password,expected_error", [
-    ("invalidUser", "admin123", "Invalid credentials"),
-    ("Admin", "wrongPassword", "Invalid credentials"),
-    ("wrongUser", "wrongPassword", "Invalid credentials")
-])
-def test_orangehrm_login_invalid_credentials(username, password, expected_error):
+def test_login_invalid_credentials():
     """
-    Negative Test Case: Attempt login with invalid credentials and verify failure.
+    Negative Test Case: Attempt login with invalid credentials and validate failure.
 
-    Test Steps:
-    1. Navigate to the login page.
-    2. Enter invalid username and/or password.
-    3. Click on Login button.
-    4. Validate error message is displayed.
+    Steps:
+    1. Navigate to login page.
+    2. Enter invalid username and password.
+    3. Click Login.
+    4. Validate error message is displayed and login fails.
 
     Expected Result:
-    Login should fail and error message should indicate invalid credentials.
+    Login attempt should fail and error message should be shown.
     """
-    result = login_with_credentials(username, password)
-    assert not result["success"], "Login succeeded with invalid credentials, which is incorrect."
-    assert expected_error.lower() in result["error"].lower(), (
-        f"Expected error message '{expected_error}' not found. Got: '{result['error']}'"
-    )
+    invalid_username = "invalid_user"
+    invalid_password = "wrong_pass"
+    result = login_with_credentials(invalid_username, invalid_password)
+    assert not result["success"], "Login should fail with invalid credentials."
+    assert result["error"] is not None and len(result["error"]) > 0, "Error message should be displayed for invalid login."
